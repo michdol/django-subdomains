@@ -2,6 +2,12 @@ import operator
 import logging
 import re
 
+try:
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:
+    # Pre Django 1.10 middleware does not require the mixin.
+    MiddlewareMixin = object
+
 from django.conf import settings
 from django.utils.cache import patch_vary_headers
 
@@ -14,7 +20,7 @@ lower = operator.methodcaller('lower')
 UNSET = object()
 
 
-class SubdomainMiddleware(object):
+class SubdomainMiddleware(MiddlewareMixin):
     """
     A middleware class that adds a ``subdomain`` attribute to the current request.
     """
