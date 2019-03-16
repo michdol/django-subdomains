@@ -5,7 +5,10 @@ except ImportError:
     from urllib.parse import urlunparse
 
 from django.conf import settings
-from django.core.urlresolvers import reverse as simple_reverse
+try:
+    from django.urls import reverse as simple_reverse
+except ImportError:  # Django<2.0
+    from django.core.urlresolvers import reverse as simple_reverse
 
 
 def current_site_domain():
@@ -19,13 +22,13 @@ def current_site_domain():
 
     return domain
 
+
 get_domain = current_site_domain
 
 
 def urljoin(domain, path=None, scheme=None):
     """
     Joins a domain, path and scheme part together, returning a full URL.
-
     :param domain: the domain, e.g. ``example.com``
     :param path: the path part of the URL, e.g. ``/example/``
     :param scheme: the scheme part of the URL, e.g. ``http``, defaulting to the
@@ -42,8 +45,7 @@ def reverse(viewname, subdomain=None, scheme=None, args=None, kwargs=None,
         current_app=None):
     """
     Reverses a URL from the given parameters, in a similar fashion to
-    :meth:`django.core.urlresolvers.reverse`.
-
+    :meth:`django.urls.reverse`.
     :param viewname: the name of URL
     :param subdomain: the subdomain to use for URL reversing
     :param scheme: the scheme to use when generating the full URL
